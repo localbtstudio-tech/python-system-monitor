@@ -4,14 +4,15 @@
 
 ### A lightweight command-line system monitoring tool built with Python.
 
-**Python · psutil · Functions · Control Flow · CLI**
+**Python · psutil · platform · Functions · Control Flow · CLI**
 
 <br>
 
 ![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge\&logo=python\&logoColor=white)
 ![psutil](https://img.shields.io/badge/Library-psutil-black?style=for-the-badge)
+![platform](https://img.shields.io/badge/Library-platform-black?style=for-the-badge)
 ![CLI](https://img.shields.io/badge/Interface-CLI-black?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.0-red?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.2-red?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-In%20Development-orange?style=for-the-badge)
 
 </div>
@@ -20,7 +21,7 @@
 
 ## ◼︎ The Project
 
-**Python System Monitor** is a command-line system monitoring tool built with Python and `psutil`.
+**Python System Monitor** is a command-line system monitoring tool built with Python, `psutil`, and `platform`.
 
 The project is being developed step by step, starting with basic system resource monitoring and gradually expanding toward a more structured monitoring application.
 
@@ -29,6 +30,8 @@ The current version focuses on:
 * CPU usage
 * RAM usage
 * Disk usage
+* System information
+* Network information
 * Full system status
 * Interactive CLI menu
 
@@ -36,20 +39,22 @@ The current version focuses on:
 
 ---
 
-## ✦ V1.0 — Basic Monitor
+## ✦ V1.2 — Network Information
 
-The first version provides a simple menu for checking the main system resources.
+The current version extends the original monitor with **system information** and **network monitoring**.
 
 ```text
 ┌─────────────────────────────────────┐
 │       PYTHON SYSTEM MONITOR         │
-│                V1.0                 │
+│               V1.2                  │
 ├─────────────────────────────────────┤
 │  1. CPU Usage                       │
 │  2. RAM Usage                       │
 │  3. Disk Usage                      │
 │  4. Full System Status              │
-│  5. Exit                            │
+│  5. System Information              │
+│  6. Network Information             │
+│  7. Exit                            │
 └─────────────────────────────────────┘
 ```
 
@@ -58,6 +63,14 @@ The first version provides a simple menu for checking the main system resources.
 * 🧠 CPU Usage
 * 💾 RAM Usage
 * 💿 Disk Usage
+* 🖥️ Operating System Information
+* ⚙️ OS Version
+* 🔧 System Architecture
+* 🔢 CPU Core Count
+* 🏷️ Hostname
+* 🌐 Network Interfaces
+* 📤 Bytes Sent
+* 📥 Bytes Received
 * 📊 Full System Status
 * 🔄 Continuous CLI loop
 * ❌ Invalid option handling
@@ -68,7 +81,7 @@ The first version provides a simple menu for checking the main system resources.
 
 ## ⚙️ How It Works
 
-The program uses `psutil` to retrieve information directly from the operating system.
+The program uses `psutil` and `platform` to retrieve information directly from the operating system.
 
 ```text
 USER
@@ -79,16 +92,17 @@ Display Menu
  ▼
 Select Option
  │
- ├──────────────┬──────────────┐
- ▼              ▼              ▼
-CPU            RAM            Disk
- │              │              │
- ▼              ▼              ▼
-psutil         psutil         psutil
- │              │              │
- └──────────────┼──────────────┘
-                ▼
-             RESULT
+ ├────────────┬────────────┬──────────────┬──────────────┐
+ ▼            ▼            ▼              ▼              ▼
+CPU          RAM          Disk          System        Network
+ │            │            │              │              │
+ ▼            ▼            ▼              ▼              ▼
+psutil       psutil       psutil       platform       psutil
+ │            │            │              │              │
+ └────────────┴────────────┴──────────────┴──────────────┘
+                              │
+                              ▼
+                           RESULT
 ```
 
 The program keeps running inside a `while` loop until the user selects **Exit**.
@@ -97,19 +111,21 @@ The program keeps running inside a `while` loop until the user selects **Exit**.
 
 ## 🧠 Concepts Practiced
 
-| Concept        | Used For                    |
-| -------------- | --------------------------- |
-| `import`       | Loading Python libraries    |
-| `psutil`       | Reading system information  |
-| `def`          | Creating reusable functions |
-| `while`        | Keeping the monitor running |
-| `if / elif`    | Handling menu options       |
-| `input()`      | Receiving user input        |
-| `int()`        | Converting menu input       |
-| `try / except` | Handling invalid input      |
-| `break`        | Exiting the program         |
-| `time.sleep()` | Adding a measurement delay  |
-| `if __name__`  | Running the main program    |
+| Concept        | Used For                               |
+| -------------- | -------------------------------------- |
+| `import`       | Loading Python libraries               |
+| `psutil`       | Reading system and network information |
+| `platform`     | Reading operating system information   |
+| `def`          | Creating reusable functions            |
+| `while`        | Keeping the monitor running            |
+| `if / elif`    | Handling menu options                  |
+| `input()`      | Receiving user input                   |
+| `int()`        | Converting menu input                  |
+| `try / except` | Handling invalid input                 |
+| `for`          | Iterating through network interfaces   |
+| `break`        | Exiting the program                    |
+| `time.sleep()` | Adding a measurement delay             |
+| `if __name__`  | Running the main program               |
 
 ---
 
@@ -128,6 +144,10 @@ main()
  │
  ├── disk_usage()
  │
+ ├── system_information()
+ │
+ ├── network_information()
+ │
  └── full_system_status()
 ```
 
@@ -141,6 +161,8 @@ psutil.cpu_percent()
 
 to measure the current CPU utilization.
 
+---
+
 ### `ram_usage()`
 
 Uses:
@@ -150,6 +172,8 @@ psutil.virtual_memory()
 ```
 
 to retrieve RAM information and display the percentage currently in use.
+
+---
 
 ### `disk_usage()`
 
@@ -161,9 +185,73 @@ psutil.disk_usage("/")
 
 to retrieve disk usage information.
 
+---
+
+### `system_information()`
+
+Uses the `platform` module and `psutil` to display basic system information.
+
+```python
+platform.system()
+platform.version()
+platform.machine()
+platform.node()
+psutil.cpu_count()
+```
+
+The function displays:
+
+```text
+OS
+OS Version
+Architecture
+CPU Cores
+Hostname
+```
+
+---
+
+### `network_information()`
+
+Uses:
+
+```python
+psutil.net_if_addrs()
+```
+
+to detect available network interfaces.
+
+It also uses:
+
+```python
+psutil.net_io_counters()
+```
+
+to retrieve network traffic statistics.
+
+The current version displays:
+
+```text
+Network Interfaces
+Bytes Sent
+Bytes Received
+```
+
+---
+
 ### `full_system_status()`
 
-Combines the CPU, RAM, and Disk monitoring functions into one system overview.
+Combines the monitoring functions into one system overview:
+
+```text
+CPU
+RAM
+Disk
+System
+Network
+```
+
+This provides a quick snapshot of the current machine.
 
 ---
 
@@ -177,7 +265,8 @@ The project will gradually evolve from a basic monitor into a more complete syst
 ├── Menu
 ├── CPU Usage
 ├── RAM Usage
-└── Disk Usage
+├── Disk Usage
+└── Full System Status
 ```
 
 **Status:** ✅ Complete
@@ -188,29 +277,32 @@ The project will gradually evolve from a basic monitor into a more complete syst
 
 ```text
 ├── OS
+├── OS Version
 ├── Architecture
 ├── CPU Cores
 └── Hostname
 ```
 
-**Status:** ⬜ Planned
+**Status:** ✅ Complete
 
 ---
 
-### V1.2 — Network Monitoring
+### V1.2 — Network Information
 
 ```text
 ├── Network Interfaces
-├── IP Addresses
-├── Sent / Received
+├── Bytes Sent
+├── Bytes Received
 └── Network Statistics
 ```
 
-**Status:** ⬜ Planned
+**Status:** ✅ Complete
 
 ---
 
 ### V1.3 — Process Monitoring
+
+The next version will introduce process monitoring.
 
 ```text
 ├── Running Processes
@@ -247,11 +339,15 @@ The project will then move toward a more structured architecture.
 
 **Python 3**
 
-### Library
+### Libraries
 
 **psutil**
 
-Used to access system and process information such as CPU, memory, disk, network, and processes.
+Used to access system resources and network information.
+
+**platform**
+
+Used to retrieve operating system and machine information.
 
 ### Interface
 
@@ -292,13 +388,16 @@ python main.py
 ```text
 -------------------------------------
 |        PYTHON SYSTEM MONITOR      |
-|               V1.0                |
+|               V1.2                |
 -------------------------------------
+
 1. CPU Usage
 2. RAM Usage
 3. Disk Usage
 4. Full System Status
-5. Exit
+5. System Information
+6. Network Information
+7. Exit
 
 Choose an option: 4
 
@@ -316,6 +415,28 @@ RAM Usage: 48.7 %
 Disk:
 
 Disk Usage: 61.2 %
+
+System:
+
+--- System Information ---
+OS: Windows
+OS Version: ...
+Architecture: AMD64
+CPU Cores: 12
+Hostname: DESKTOP-...
+
+Network:
+
+--- Network Information ---
+
+Network Interfaces:
+- WiFi
+- Local Area Connection* 1
+- Local Area Connection* 2
+
+Network Statistics:
+Bytes Sent: ...
+Bytes Received: ...
 ```
 
 ---
@@ -330,7 +451,9 @@ python-system-monitor/
 └── .gitignore
 ```
 
-The project will become more modular as new versions are introduced.
+The project currently uses a single Python file to keep the architecture simple.
+
+As new versions are introduced, the project will gradually become more modular.
 
 ---
 
@@ -347,10 +470,16 @@ Python Fundamentals
 System Monitoring
         │
         ▼
-Modules & OOP
+System Information
         │
         ▼
-Process & Network Monitoring
+Network Monitoring
+        │
+        ▼
+Process Monitoring
+        │
+        ▼
+Modules & OOP
         │
         ▼
 Structured Application
@@ -358,21 +487,27 @@ Structured Application
 
 The project is designed to grow alongside my Python skills.
 
+> **Learn → Build → Improve → Refactor**
+
 ---
 
 ## 🔮 Future Direction
 
-After the CLI version is completed, possible future improvements include:
+After the core CLI version is completed, possible improvements include:
 
-* [ ] More detailed system information
-* [ ] Network monitoring
-* [ ] Process monitoring
-* [ ] Logging system
-* [ ] JSON configuration
-* [ ] Better project architecture
-* [ ] OOP refactoring
-* [ ] GUI interface
-* [ ] System monitoring dashboard
+* [ ] Display IP addresses
+* [ ] Add detailed network information
+* [ ] Add process monitoring
+* [ ] Display process CPU usage
+* [ ] Display process memory usage
+* [ ] Add logging system
+* [ ] Add JSON configuration
+* [ ] Refactor into OOP
+* [ ] Split the application into modules
+* [ ] Add configuration management
+* [ ] Improve error handling
+* [ ] Build a GUI version
+* [ ] Build a system monitoring dashboard
 
 ---
 
