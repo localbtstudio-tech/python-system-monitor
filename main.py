@@ -6,7 +6,7 @@ import platform
 def display_menu():
     print("-------------------------------------")
     print("|        PYTHON SYSTEM MONITOR      |")
-    print("|               V1.1                |")
+    print("|               V1.2                |")
     print("-------------------------------------")
 
     print("1. CPU Usage")
@@ -14,7 +14,8 @@ def display_menu():
     print("3. Disk Usage")
     print("4. Full System Status")
     print("5. System Information")
-    print("6. Exit")
+    print("6. Network Information")
+    print("7. Exit")
 
 
 def cpu_usage():
@@ -49,6 +50,23 @@ def system_information():
     print("Hostname:", platform.node())
 
 
+def network_information():
+    print("\n--- Network Information ---")
+
+    interfaces = psutil.net_if_addrs()
+
+    print("\nNetwork Interfaces:")
+
+    for interface in interfaces:
+        print("-", interface)
+
+    stats = psutil.net_io_counters()
+
+    print("\nNetwork Statistics:")
+    print("Bytes Sent:", stats.bytes_sent)
+    print("Bytes Received:", stats.bytes_recv)
+
+
 def full_system_status():
     print("\n--- System Status ---")
 
@@ -63,6 +81,9 @@ def full_system_status():
 
     print("\nSystem:")
     system_information()
+
+    print("\nNetwork:")
+    network_information()
 
 
 def main():
@@ -88,6 +109,9 @@ def main():
                 system_information()
 
             elif option == 6:
+                network_information()
+
+            elif option == 7:
                 print("Goodbye!")
                 break
 
