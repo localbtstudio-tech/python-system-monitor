@@ -6,7 +6,7 @@ import platform
 def display_menu():
     print("-------------------------------------")
     print("|        PYTHON SYSTEM MONITOR      |")
-    print("|               V1.2                |")
+    print("|               V1.3                |")
     print("-------------------------------------")
 
     print("1. CPU Usage")
@@ -15,7 +15,8 @@ def display_menu():
     print("4. Full System Status")
     print("5. System Information")
     print("6. Network Information")
-    print("7. Exit")
+    print("7. Running Processes")
+    print("8. Exit")
 
 
 def cpu_usage():
@@ -67,6 +68,28 @@ def network_information():
     print("Bytes Received:", stats.bytes_recv)
 
 
+def process_information():
+    print("\n--- Running Processes ---")
+
+    print("PID\tName\t\tCPU%\tMemory%")
+
+    for process in psutil.process_iter(
+        ["pid", "name", "cpu_percent", "memory_percent"]
+    ):
+        try:
+            info = process.info
+
+            print(
+                info["pid"],
+                info["name"],
+                info["cpu_percent"],
+                info["memory_percent"]
+            )
+
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+
+
 def full_system_status():
     print("\n--- System Status ---")
 
@@ -84,6 +107,9 @@ def full_system_status():
 
     print("\nNetwork:")
     network_information()
+
+    print("\nProcesses:")
+    process_information()
 
 
 def main():
@@ -112,6 +138,9 @@ def main():
                 network_information()
 
             elif option == 7:
+                process_information()
+
+            elif option == 8:
                 print("Goodbye!")
                 break
 
