@@ -1,12 +1,37 @@
-import psutil
-import time
-import platform
+import json
+import logging
+
+from system_monitor import SystemMonitor
 
 
-def display_menu():
+def load_config():
+    try:
+        with open("config.json", "r", encoding="utf-8") as file:
+            config = json.load(file)
+
+        return config
+
+    except FileNotFoundError:
+        print("Configuration file not found.")
+        return None
+
+    except json.JSONDecodeError:
+        print("Invalid JSON configuration.")
+        return None
+
+
+def setup_logging(log_file):
+    logging.basicConfig(
+        filename=log_file,
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s"
+    )
+
+
+def display_menu(config):
     print("-------------------------------------")
-    print("|        PYTHON SYSTEM MONITOR      |")
-    print("|               V1.3                |")
+    print(f"|        {config['app_name']}      |")
+    print(f"|               {config['version']}                |")
     print("-------------------------------------")
 
     print("1. CPU Usage")
@@ -19,129 +44,50 @@ def display_menu():
     print("8. Exit")
 
 
-def cpu_usage():
-    print("\nMeasuring CPU...")
-
-    time.sleep(1)
-
-    cpu = psutil.cpu_percent()
-
-    print("CPU Usage:", cpu, "%")
-
-
-def ram_usage():
-    memory = psutil.virtual_memory()
-
-    print("\nRAM Usage:", memory.percent, "%")
-
-
-def disk_usage():
-    disk = psutil.disk_usage("/")
-
-    print("\nDisk Usage:", disk.percent, "%")
-
-
-def system_information():
-    print("\n--- System Information ---")
-
-    print("OS:", platform.system())
-    print("OS Version:", platform.version())
-    print("Architecture:", platform.machine())
-    print("CPU Cores:", psutil.cpu_count())
-    print("Hostname:", platform.node())
-
-
-def network_information():
-    print("\n--- Network Information ---")
-
-    interfaces = psutil.net_if_addrs()
-
-    print("\nNetwork Interfaces:")
-
-    for interface in interfaces:
-        print("-", interface)
-
-    stats = psutil.net_io_counters()
-
-    print("\nNetwork Statistics:")
-    print("Bytes Sent:", stats.bytes_sent)
-    print("Bytes Received:", stats.bytes_recv)
-
-
-def process_information():
-    print("\n--- Running Processes ---")
-
-    print("PID\tName\t\tCPU%\tMemory%")
-
-    for process in psutil.process_iter(
-        ["pid", "name", "cpu_percent", "memory_percent"]
-    ):
-        try:
-            info = process.info
-
-            print(
-                info["pid"],
-                info["name"],
-                info["cpu_percent"],
-                info["memory_percent"]
-            )
-
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
-            continue
-
-
-def full_system_status():
-    print("\n--- System Status ---")
-
-    print("\nCPU:")
-    cpu_usage()
-
-    print("\nRAM:")
-    ram_usage()
-
-    print("\nDisk:")
-    disk_usage()
-
-    print("\nSystem:")
-    system_information()
-
-    print("\nNetwork:")
-    network_information()
-
-    print("\nProcesses:")
-    process_information()
-
-
 def main():
+    config = load_config()
+
+    if config is None:
+        return
+
+    setup_logging(config["log_file"])
+
+    logging.info("Application started")
+
+    monitor = SystemMonitor(config)
+
     while True:
-        display_menu()
+        display_menu(config)
 
         try:
             option = int(input("Choose an option: "))
 
             if option == 1:
-                cpu_usage()
+                monitor.cpu_usage()
 
             elif option == 2:
-                ram_usage()
+                monitor.ram_usage()
 
             elif option == 3:
-                disk_usage()
+                monitor.disk_usage()
 
             elif option == 4:
-                full_system_status()
+                monitor.full_system_status()
 
             elif option == 5:
-                system_information()
+                monitor.system_information()
 
             elif option == 6:
-                network_information()
+                monitor.network_information()
 
             elif option == 7:
-                process_information()
+                monitor.process_information()
 
             elif option == 8:
                 print("Goodbye!")
+
+                logging.info("Application closed")
+
                 break
 
             else:
@@ -149,6 +95,7 @@ def main():
 
         except ValueError:
             print("Please enter a number.")
+            logging.warning("Invalid menu input")
 
 
 if __name__ == "__main__":

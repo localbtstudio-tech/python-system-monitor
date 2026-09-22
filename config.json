@@ -1,0 +1,7 @@
+{
+    "app_name": "PYTHON SYSTEM MONITOR",
+    "version": "V2.0",
+    "cpu_delay": 1,
+    "process_limit": 20,
+    "log_file": "system_monitor.log"
+}

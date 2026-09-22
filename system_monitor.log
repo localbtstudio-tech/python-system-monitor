@@ -1,0 +1,8 @@
+2026-09-22 18:41:05,339 - INFO - Application started
+2026-09-22 18:41:05,340 - INFO - SystemMonitor initialized
+2026-09-22 18:41:10,041 - INFO - Checking CPU usage
+2026-09-22 18:41:11,049 - INFO - CPU usage: 100.00%
+2026-09-22 18:41:11,851 - INFO - Checking RAM usage
+2026-09-22 18:41:11,852 - INFO - RAM usage: 90.90%
+2026-09-22 18:41:14,226 - INFO - Checking RAM usage
+2026-09-22 18:41:14,227 - INFO - RAM usage: 91.20%
